@@ -1,0 +1,4 @@
+# Kebab-Case Blog Entry
+
+This is a blog entry written with Djot using a kebab-case file name.
+It will get its own subdirectory in the website with this file's contents transformed into an index.html.
