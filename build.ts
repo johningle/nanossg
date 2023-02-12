@@ -7,6 +7,7 @@ const tmpl = await Deno.readTextFile(config.htmlTemplate);
 await Deno.remove(config.htmlRoot, {recursive: true});
 await ensureDir(config.htmlRoot);
 
+// convert all djot files
 for await (const djotFile of walk(config.djotRoot, {
     includeDirs: false,
     exts: ['.djot']
