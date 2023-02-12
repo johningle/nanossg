@@ -5,7 +5,7 @@ Outputs file system routable index.html files for pretty URLs and whatever you d
 Also outputs JSON files to site/static containing metadata about the generated site.
 These are intended for consumption by client-side scripts and web components to facilitate dynamic navigation and such.
 
-This project is fit-to-purpose and will not become a general-purpose JS framework or highly extensible SSG.
+This project is fit for purpose and will not become a general-purpose JS framework or highly extensible SSG.
 If you need either of these on Deno, please see [Fresh](https://fresh.deno.dev) or [Lume](https://lume.land) respectively.
 
 ## Usage
