@@ -1,6 +1,6 @@
 {
-    "djotRoot": "src/",
-    "htmlRoot": "site/",
-    "htmlTemplate": "src/template.html",
-    "contentToken": "${content}"
+    "djotRootDir": "src",
+    "htmlRootDir": "site",
+    "htmlTemplateFile": "src/template.html",
+    "htmlContentToken": "${content}"
 }

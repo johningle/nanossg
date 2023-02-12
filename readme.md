@@ -15,4 +15,6 @@ An opinionated Deno-based nano-SSG using [Djot.js](https://github.com/jgm/djot.j
 
 - [x] Basic djot-to-html conversion working with minimal config and static resource support
 - [x] Pretty URLs with FS routing based on djot file names
-- [ ] Pretty URLs mirroring subdirectories in src/
+- [x] Pretty URLs mirroring subdirectories in src/
+- [x] Handle case when configured htmlRootDir does not exist
+- [ ] Generate a json file containing index of pages in the output static subdirectory
