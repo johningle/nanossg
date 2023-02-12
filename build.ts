@@ -1,7 +1,7 @@
 import djot from "npm:@djot/djot";
 import config from "./config.json" assert {type: "json"};
-import {walk, copy, ensureDir} from "https://deno.land/std/fs/mod.ts";
-import {join} from "https://deno.land/std/path/mod.ts";
+import {walk, copy, ensureDir} from "https://deno.land/std@0.177.0/fs/mod.ts";
+import {join} from "https://deno.land/std@0.177.0/path/mod.ts";
 
 const tmpl = await Deno.readTextFile(config.htmlTemplate);
 await Deno.remove(config.htmlRoot, {recursive: true});
