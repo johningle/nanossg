@@ -4,8 +4,12 @@
 
 [subdir for organization](subdir-for-organization-of-src)
 
+[dub subdir](subdir-for-organization-of-src/dub-sub-dir)
+
 [other pages in subdir](subdir-for-organization-of-src/other-pages)
 
 [page with spaces in name](page with spaces in name)
 
 [static json file](static/data.json)
+
+[build-time json file](static/pages.json)

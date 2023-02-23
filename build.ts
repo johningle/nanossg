@@ -1,33 +1,39 @@
-import djot from "npm:@djot/djot";
-import config from "./config.json" assert {type: "json"};
-import {walk, WalkEntry, copy, ensureDir} from "https://deno.land/std@0.177.0/fs/mod.ts";
-import {join, dirname, normalize} from "https://deno.land/std@0.177.0/path/mod.ts";
+import * as depsProd from "./deps.ts";
 
-const pageList: Array<string> = [];
-const htmlTemplate = await Deno.readTextFile(config.htmlTemplateFile);
+let deps = depsProd;
+const pageList: any = {};
+const htmlTemplate = await Deno.readTextFile(deps.config.htmlTemplateFile);
 await empty_html_root_dir();
-await copy_static_dir();
+await copy_static_dir_to_html_root_dir();
 await walk_djot_files_and_output_html();
+await write_json(pageList);
 
 async function walk_djot_files_and_output_html() {
-    for await (const djotFile of walk(config.djotRootDir, {
+    for await (const djotFile of deps.walk(deps.config.djotRootDir, {
         includeDirs: false,
         exts: ['.djot']
     })) {
         const finalHtml = await transform_djot_to_html(djotFile);
         const outFile = calculate_output_file_path(djotFile);
-        await ensureDir(dirname(outFile));
+        await deps.ensureDir(deps.dirname(outFile));
         await Deno.writeTextFile(outFile, finalHtml);
-        const pagePath = dirname(outFile).replace(config.htmlRootDir, '');
-        pageList.push(pagePath);
+        const pagePath = deps.dirname(outFile).replace(deps.config.htmlRootDir, '');
+        add_to_page_list(pagePath);
     }
 }
 
-await write_json(pageList);
+function add_to_page_list(pagePath: string) {
+    let pageName = deps.basename(pagePath);
+    if (pageName == 'index.html') { pageName = deps.basename(deps.dirname(pagePath)); }    
+    let pageKey = pagePath.replaceAll('-', ' ', );
+    if (!(pageKey in pageList)) { pageKey = pageName.replaceAll('-', ' ', ); }
+    if (pageKey == '') { pageKey = 'index'; }
+    pageList[pageKey] = pagePath;
+}
 
-async function write_json(pages: Array<string>) {
-    const outFile = join(config.htmlRootDir, 'static', 'pages.json');
-    const outJson = JSON.stringify(pages);
+async function write_json(pages: any) {
+    const outFile = deps.join(deps.config.htmlRootDir, 'static', 'pages.json');
+    const outJson = JSON.stringify(pages, null, 4);
 
     try {
         await Deno.writeTextFile(outFile, outJson);
@@ -38,39 +44,50 @@ async function write_json(pages: Array<string>) {
 
 async function empty_html_root_dir() {
     try {
-        await Deno.remove(config.htmlRootDir, {recursive: true});
+        await Deno.remove(deps.config.htmlRootDir, {recursive: true});
     } catch {
         console.log('Configured htmlRootDir does not appear to exist, it will be created.');
     } finally {
-        await ensureDir(config.htmlRootDir);
+        await deps.ensureDir(deps.config.htmlRootDir);
     }
 }
 
-async function copy_static_dir() {
-    await copy(
-        join(config.djotRootDir, 'static'),
-        join(config.htmlRootDir, 'static'),
+async function copy_static_dir_to_html_root_dir() {
+    await deps.copy(
+        deps.join(deps.config.djotRootDir, 'static'),
+        deps.join(deps.config.htmlRootDir, 'static'),
         {overwrite: true});
 }
 
-async function transform_djot_to_html(djotFile: WalkEntry) {
+async function transform_djot_to_html(djotFile: deps.WalkEntry) {
     const djotContent = await Deno.readTextFile(djotFile.path);
-    const ast = djot.parse(djotContent, {sourcePositions: false});
-    const html = djot.renderHTML(ast);
-    const final = htmlTemplate.replace(config.htmlContentToken, html);
+    const ast = deps.djot.parse(djotContent, {sourcePositions: false});
+    const html = deps.djot.renderHTML(ast);
+    const final = htmlTemplate.replace(deps.config.htmlContentToken, html);
     return final;
 }
 
-function calculate_output_file_path(djotFile: WalkEntry) {
-    let outFile = djotFile.path.replace(config.djotRootDir, config.htmlRootDir);
+function calculate_output_file_path(djotFile: deps.WalkEntry) {
+    let outFile = djotFile.path.replace(deps.config.djotRootDir, deps.config.htmlRootDir);
 
     if (djotFile.name == 'index.djot') {
         outFile = outFile.replace('.djot', '.html');
     }
     else {
         outFile = outFile.replace('.djot', '');
-        outFile = join(outFile, 'index.html');
+        outFile = deps.join(outFile, 'index.html');
     }
 
     return outFile;
+}
+
+export {
+    deps,
+    walk_djot_files_and_output_html,
+    add_to_page_list,
+    write_json,
+    empty_html_root_dir,
+    copy_static_dir_to_html_root_dir,
+    transform_djot_to_html,
+    calculate_output_file_path
 }
