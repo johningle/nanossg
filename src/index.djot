@@ -1,6 +1,9 @@
 # Hello nanoSSG (with Djot)!
 
 ```=html
+<render-fragment href="fragment.html"><p>placeholder</p></render-fragment>
 <page-list></page-list>
-<script type="module" src="static/page-list.js" />
+
+<script type="module" src="/static/page-list.js"></script>
+<script type="module" src="/static/render-fragment.js"></script>
 ```

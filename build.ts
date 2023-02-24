@@ -9,6 +9,7 @@ await empty_html_root_dir();
 await copy_static_dir_to_html_root_dir();
 await walk_djot_files_and_output_html();
 await write_json(pageList);
+await copy_raw_html_to_root_dir();
 
 async function walk_djot_files_and_output_html() {
     for await (const djotFile of walk(config.djotRootDir, {
@@ -60,6 +61,16 @@ async function copy_static_dir_to_html_root_dir() {
         join(config.djotRootDir, 'static'),
         join(config.htmlRootDir, 'static'),
         {overwrite: true});
+}
+
+async function copy_raw_html_to_root_dir() {
+    for await (const htmlFile of walk(config.djotRootDir, {
+        includeDirs: false,
+        exts: ['.html']
+    })) {
+        const outputPath = htmlFile.path.replace(config.djotRootDir, config.htmlRootDir);
+        await copy(htmlFile.path, outputPath, {overwrite: true});
+    }
 }
 
 async function transform_djot_to_html(djotFile: WalkEntry) {
