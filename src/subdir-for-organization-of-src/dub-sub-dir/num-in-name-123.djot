@@ -2,7 +2,5 @@
 
 This page's name is alphanumeric.
 
-```=html
-<render-fragment href="../fragment.html"><p>placeholder</p></render-fragment>
-<script type="module" src="/static/render-fragment.js"></script>
-```
+{ hx-get="../fragment.html" hx-trigger="load" hx-swap="outerHTML" }
+Loading...

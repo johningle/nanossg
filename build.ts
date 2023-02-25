@@ -68,8 +68,10 @@ async function copy_raw_html_to_root_dir() {
         includeDirs: false,
         exts: ['.html']
     })) {
-        const outputPath = htmlFile.path.replace(config.djotRootDir, config.htmlRootDir);
-        await copy(htmlFile.path, outputPath, {overwrite: true});
+        if (htmlFile.path != config.htmlTemplateFile) {
+            const outputPath = htmlFile.path.replace(config.djotRootDir, config.htmlRootDir);
+            await copy(htmlFile.path, outputPath, {overwrite: true});
+        }
     }
 }
 
