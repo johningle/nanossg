@@ -1,5 +1,7 @@
 # nanoSSG
 
+Djot.js + Deno + HTMX = :heart:
+
 An opinionated, single script, Deno-based nano-sized SSG using [Djot.js](https://github.com/jgm/djot.js) instead of Markdown.
 Outputs file system routable index.html files for pretty URLs and whatever you deign worthy to place in src/static.
 Also outputs JSON files to site/static containing metadata about the generated site.
@@ -23,11 +25,18 @@ If you need either of these on Deno, please see [Fresh](https://fresh.deno.dev) 
 - [x] Pretty URLs with FS routing based on djot file names
 - [x] Pretty URLs mirroring subdirectories in src/
 - [x] Handle case when configured htmlRootDir does not exist
-- [ ] Generate a json file containing index of pages in the output static subdirectory
+- [x] Generate a json file containing index of pages in the output static subdirectory
+- [x] Add a web component to generate list of page links from pages.json file.
+- [x] Add HTMX and begin exploring complementary usage with Djot.
+- [ ] Expand page.json schema and web component to generate a proper nav menu suitable for styling.
+- [ ] Add a web component for automatic TOC generation based on headings.
+- [ ] Rewrite example content to produce nanoSSG's own documentation and prove out common use-cases.
+- [ ] Write unit tests around the build script to ease refactoring as it grows.
+- [ ] Explicitly define the limits of this project to prevent _too much_ growth.
 
 ## Feature Descriptions
 
-nanoSSG will only ever support Djot for writing content in plain text files with the .djot extension.
+nanoSSG will only ever support Djot and raw HTML for writing content in plain text files with the .djot extension.
 It ignores all other files in the configured djotRootDir (src by default).
 
 Djot and Markdown have significant overlap, but I like Djot better.
