@@ -28,15 +28,19 @@ If you need either of these on Deno, please see [Fresh](https://fresh.deno.dev) 
 - [x] Generate a json file containing index of pages in the output static subdirectory
 - [x] Add a web component to generate list of page links from pages.json file.
 - [x] Add HTMX and begin exploring complementary usage with Djot.
-- [ ] Expand page.json schema and web component to generate a proper nav menu suitable for styling.
-- [ ] Add a web component for automatic TOC generation based on headings.
-- [ ] Rewrite example content to produce nanoSSG's own documentation and prove out common use-cases.
 - [ ] Write unit tests around the build script to ease refactoring as it grows.
+- [ ] Remove raw HTML file support in favor of exploring Djot only.
+- [ ] Add support for HTML fragment file generation from Djot (.djof extension).
+- [ ] Expand pages.json schema and add a web component to generate a proper nav menu.
+- [ ] Expand nanossg.json (config) schema to support custom extensions and HTML templates.
+- [ ] Add a web component for automatic TOC generation based on headings.
+- [ ] Add a web component to redirect to a random content page from pages.json.
 - [ ] Explicitly define the limits of this project to prevent _too much_ growth.
+- [ ] Rewrite example content to produce nanoSSG's own documentation.
 
 ## Feature Descriptions
 
-nanoSSG will only ever support Djot and raw HTML for writing content in plain text files with the .djot extension.
+nanoSSG will only ever support Djot for writing content.
 It ignores all other files in the configured djotRootDir (src by default).
 
 Djot and Markdown have significant overlap, but I like Djot better.
@@ -44,7 +48,7 @@ See its [full syntax references](https://htmlpreview.github.io/?https://github.c
 As it is designed by the creator of Pandoc, your djot content can go _much_ further than nanoSSG.
 
 Only one HTML template is supported for now, with a configurable content replacement token.
-Think of the HTML template as global and include the references you want on every page there.
+Custom template-to-extension mappings may be experimented with for future support.
 Djot supports both [raw inline](https://htmlpreview.github.io/?https://github.com/jgm/djot/blob/master/doc/syntax.html#raw-inline) and [raw block](https://htmlpreview.github.io/?https://github.com/jgm/djot/blob/master/doc/syntax.html#raw-block) embeddings, so you can always drop some raw HTML into your djot files if you're feeling frisky.
 Use raw block embedding in djot to customize your per-page inclusions.
 

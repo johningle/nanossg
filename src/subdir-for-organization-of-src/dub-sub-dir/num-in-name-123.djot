@@ -1,6 +1,0 @@
-# Number in the Name!
-
-This page's name is alphanumeric.
-
-{ hx-get="../fragment.html" hx-trigger="load" hx-swap="outerHTML" }
-Loading...
