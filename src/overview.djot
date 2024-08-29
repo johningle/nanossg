@@ -1,0 +1,7 @@
+# Overview
+
+[Djot](https://djot.net/) is like markdown, only more consistent, with simple annotations mapping directly to HTML attributes.
+This makes Djot the more powerful tool for ease-of-authoring when targeting HTML output.
+Combined with [htmx](https://htmx.org/), the potential for rapid, declarative website design is taken to another level.
+Exploring this space is the raison d'être of nanossg (pronounced nano-sausage).
+

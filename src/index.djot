@@ -1,9 +1,4 @@
 # Hello nanoSSG (with Djot)!
 
-```=html
-<page-list></page-list>
-<script type="module" src="/static/page-list.js"></script>
-```
-
-{ #big-idea }
-The big idea here is simple: use htmx to add dynamism to static content generated from Djot files.
+{ #small-idea }
+The small idea here is simple: use htmx to add dynamism to static content generated from Djot files.

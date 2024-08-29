@@ -1,5 +1,5 @@
 class PageList extends HTMLElement {
-    dataSrc = "static/pages.json";
+    dataSrc = "/static/pages.json";
 
     constructor() {
         super();
@@ -19,7 +19,7 @@ class PageList extends HTMLElement {
 
             for (const page in pages) {
                 const anchor = document.createElement('a');
-                anchor.setAttribute('href', pages[page]);
+                anchor.setAttribute('href', pages[page] ? pages[page] : '/');
                 anchor.innerText = page;
                 this.appendChild(anchor);
                 this.appendChild(document.createElement('br'));

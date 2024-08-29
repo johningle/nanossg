@@ -1,27 +1,24 @@
-import config from "./nanossg.json" assert {type: "json"};
+import config from "./nanossg.json" with {type: "json"};
 import {parse, renderHTML} from "npm:@djot/djot";
 import {walk, copy, ensureDir, type WalkEntry} from "https://deno.land/std@0.177.0/fs/mod.ts";
 import {join, dirname, basename} from "https://deno.land/std@0.177.0/path/mod.ts";
 
 const pageList: Record<string,string> = {};
 
-await empty_html_root_dir(Deno.remove, config);
+await empty_html_root_dir(config);
 await copy_static_dir_to_html_root_dir(config);
-await walk_djot_files_and_output_html(pageList, Deno.readTextFile, config);
-await write_json(pageList, Deno.writeTextFile, config);
+await walk_djot_files_and_output_html(pageList, config);
+await write_json(pageList, config);
 await copy_raw_html_to_root_dir(config);
 
-type ReadTextFile = (path: string | URL, options?: Deno.ReadFileOptions | undefined) => Promise<string>;
-type WriteTextFile = (path: string | URL, data: string | ReadableStream<string>, options?: Deno.WriteFileOptions | undefined) => Promise<void>;
-type RemoveDir = (path: string | URL, options?: Deno.RemoveOptions | undefined) => Promise<void>;
-
-async function walk_djot_files_and_output_html(pageList: Record<string,string>, readTextFile: ReadTextFile, config: IConfig) {
+async function walk_djot_files_and_output_html(pageList: Record<string,string>, config: IConfig) {
     const htmlTemplate = await Deno.readTextFile(config.htmlTemplateFile);
     for await (const djotFile of walk(config.djotRootDir, {
         includeDirs: false,
         exts: ['.djot']
     })) {
-        const finalHtml = await transform_djot_to_html(djotFile, htmlTemplate, readTextFile, config);
+        const fragment = await transform_djot_to_html(djotFile);
+        const finalHtml = await replace_in_template(htmlTemplate, config, fragment);
         const outFile = calculate_output_file_path(djotFile, config);
         await ensureDir(dirname(outFile));
         await Deno.writeTextFile(outFile, finalHtml);
@@ -39,21 +36,21 @@ function add_to_page_list(pageList: Record<string,string>, pagePath: string) {
     pageList[pageKey] = pagePath;
 }
 
-async function write_json(pages: Record<string,string>, writeTextFile: WriteTextFile, config: IConfig) {
+async function write_json(pages: Record<string,string>, config: IConfig) {
     const outFile = join(config.htmlRootDir, 'static', 'pages.json');
     const outJson = JSON.stringify(pages, null, 4);
 
     try {
-        await writeTextFile(outFile, outJson);
+        await Deno.writeTextFile(outFile, outJson);
     } catch (ex) {
         console.log('Error writing pages.json, printing error and continuing.');
         console.log(ex);
     }
 }
 
-async function empty_html_root_dir(remove: RemoveDir, config: IConfig) {
+async function empty_html_root_dir(config: IConfig) {
     try {
-        await remove(config.htmlRootDir, {recursive: true});
+        await Deno.remove(config.htmlRootDir, {recursive: true});
     } catch {
         console.log('Configured htmlRootDir does not appear to exist, it will be created.');
     } finally {
@@ -80,12 +77,15 @@ async function copy_raw_html_to_root_dir(config: IConfig) {
     }
 }
 
-async function transform_djot_to_html(djotFile: WalkEntry, htmlTemplate: string, readTextFile: ReadTextFile, config: IConfig) {
-    const djotContent = await readTextFile(djotFile.path);
+async function transform_djot_to_html(djotFile: WalkEntry) {
+    const djotContent = await Deno.readTextFile(djotFile.path);
     const ast = parse(djotContent, {sourcePositions: false});
     const html = renderHTML(ast);
-    const final = htmlTemplate.replace(config.htmlContentToken, html);
-    return final;
+    return html;
+}
+
+function replace_in_template(htmlTemplate: string, config: IConfig, fragment: string) {
+  return htmlTemplate.replace(config.htmlContentToken, fragment);
 }
 
 function calculate_output_file_path(djotFile: WalkEntry, config: IConfig) {
@@ -107,19 +107,4 @@ interface IConfig {
     htmlRootDir: string,
     htmlTemplateFile: string,
     htmlContentToken: string
-}
-
-export {
-    empty_html_root_dir,
-    copy_static_dir_to_html_root_dir,
-    walk_djot_files_and_output_html,
-    write_json,
-    copy_raw_html_to_root_dir
-}
-
-export type {
-    IConfig,
-    ReadTextFile,
-    WriteTextFile,
-    RemoveDir
 }

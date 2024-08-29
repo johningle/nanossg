@@ -5,7 +5,9 @@
         <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
     </head>
     <body>
+        <page-list src="/static/pages.json"></page-list>
         ${content}
+        <script type="module" src="/static/page-list.js"></script>
         <script src="/static/htmx.min.js"></script>
     </body>
 </html>
